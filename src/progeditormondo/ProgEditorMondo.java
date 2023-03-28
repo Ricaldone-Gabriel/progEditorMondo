@@ -12,6 +12,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,7 +42,7 @@ public class ProgEditorMondo extends JFrame {
             for (int j = 0; j < grandezzaY; j++) {
                 mondo[j][i] = new Piattaforma("terra", j, i);
                 mondoEditor[j][i] = new JPanel();
-                mondoEditor[j][i].setBackground(new Color(90, 90, 90));
+                mondoEditor[j][i].setBackground(new Color(155, 90, 60));
                 mondoEditor[j][i].setBounds(i * 37 + 5, j * 37 + 5, 30, 30);
                 int k = j, l = i;
                 mondoEditor[j][i].addMouseListener(new MouseAdapter() {
@@ -97,8 +100,9 @@ public class ProgEditorMondo extends JFrame {
         JButton erba = new JButton("Erba");
         JButton erbaC = new JButton("Erba chiara");
         JButton salva = new JButton("Salva");
-        //Si salva su mondo.txt
+        JButton carica = new JButton("Carica");
 
+        //Si salva su mondo.txt
         frame.setLayout(null);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -119,6 +123,7 @@ public class ProgEditorMondo extends JFrame {
 
         titoloMenu.setBorder(new EmptyBorder(10, 10, 30, 10));
         titoloMenu.setFont(new Font("Calibri", Font.PLAIN, 30));
+
         titoloMenu.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         terra.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -127,8 +132,11 @@ public class ProgEditorMondo extends JFrame {
         acquaS.setAlignmentX(Component.CENTER_ALIGNMENT);
         erba.setAlignmentX(Component.CENTER_ALIGNMENT);
         erbaC.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         salva.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
+
+        carica.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         pannelloSceltaTerreno.add(titoloMenu);
         pannelloSceltaTerreno.add(terra);
         pannelloSceltaTerreno.add(acqua);
@@ -137,7 +145,8 @@ public class ProgEditorMondo extends JFrame {
         pannelloSceltaTerreno.add(erba);
         pannelloSceltaTerreno.add(erbaC);
         pannelloSceltaTerreno.add(salva);
-        
+        pannelloSceltaTerreno.add(carica);
+
         pannelloSceltaTerreno.setLayout(new BoxLayout(pannelloSceltaTerreno, BoxLayout.Y_AXIS));
 
         terra.addActionListener(new ActionListener() {
@@ -207,9 +216,65 @@ public class ProgEditorMondo extends JFrame {
             }
 
         });
+
+        carica.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                String terreno = "";
+                Color colore;
+                FileReader fIn;
+                try {
+                    fIn = new FileReader("mondo.txt");
+                    BufferedReader read = new BufferedReader(fIn);
+
+                    for (int i = 0; i < grandezzaY; i++) {
+                        for (int j = 0; j < grandezzaX; j++) {
+                            terreno = read.readLine();
+                            mondo[i][j].terreno = terreno;
+
+                            switch (terreno) {
+                                case "acquaP":
+                                    colore = new Color(47, 54, 153);
+                                    break;
+                                case "acqua":
+                                    colore = new Color(77, 109, 243);
+                                    break;
+                                case "acquaS":
+                                    colore = new Color(153, 217, 234);
+                                    break;
+                                case "erbaC":
+                                    colore = new Color(168, 230, 29);
+                                    break;
+                                case "erba":
+                                    colore = new Color(34, 177, 76);
+                                    break;
+                                case "terra":
+                                    colore = new Color(155, 90, 60);
+                                    break;
+                                default:
+                                    colore = new Color(255, 255, 255);
+                                    break;
+                            }
+                            mondoEditor[i][j].setBackground(colore);
+                        }
+
+                    }
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        );
+
         frame.add(pannelloSceltaTerreno);
+
         frame.add(pannelloMondo);
-        frame.setVisible(true);
+
+        frame.setVisible(
+                true);
         /*
         
         for (int i = 0; i < mondoSizeX; i++) {
