@@ -16,9 +16,8 @@ public class MondoEditor {
 
     public Piattaforma casella;
     public JPanel casellaEditor;
-
+    int posX,posY;
     MondoEditor(String terreno, int i, int j) {
-        Color colore;
         casella = new Piattaforma(terreno, i, j);
         casellaEditor = new JPanel();
         casellaEditor.setBackground(terrainColor(terreno));
