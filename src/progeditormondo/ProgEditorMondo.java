@@ -33,51 +33,24 @@ import javax.swing.border.EtchedBorder;
 public class ProgEditorMondo extends JFrame {
 
     String scelta = "terra";
-    Piattaforma[][] mondo;
     int grandezzaX = 26, grandezzaY = 14;
-
+    MondoEditor[][] casella; 
+    
     ProgEditorMondo() {
-        mondo = new Piattaforma[grandezzaY][grandezzaX];
-        JPanel[][] mondoEditor = new JPanel[grandezzaY][grandezzaX];
-
+        casella = new MondoEditor[grandezzaY][grandezzaX];
+        
         for (int i = 0; i < grandezzaX; i++) {
             for (int j = 0; j < grandezzaY; j++) {
-                mondo[j][i] = new Piattaforma("terra", j, i);
-                mondoEditor[j][i] = new JPanel();
-                mondoEditor[j][i].setBackground(new Color(155, 90, 60));
-                mondoEditor[j][i].setBounds(i * 37 + 5, j * 37 + 5, 30, 30);
+                
+                casella[j][i] = new MondoEditor("terra",j,i);
+                
+                casella[j][i].casellaEditor.setBounds(i * 37 + 5, j * 37 + 5, 30, 30);
                 int k = j, l = i;
-                mondoEditor[j][i].addMouseListener(new MouseAdapter() {
+                casella[j][i].casellaEditor.addMouseListener(new MouseAdapter() {
 
                     @Override
                     public void mousePressed(MouseEvent e) {
-                        Color colore;
-                        mondo[k][l].terreno = scelta;
-
-                        switch (scelta) {
-                            case "acquaP":
-                                colore = new Color(47, 54, 153);
-                                break;
-                            case "acqua":
-                                colore = new Color(77, 109, 243);
-                                break;
-                            case "acquaS":
-                                colore = new Color(153, 217, 234);
-                                break;
-                            case "erbaC":
-                                colore = new Color(168, 230, 29);
-                                break;
-                            case "erba":
-                                colore = new Color(34, 177, 76);
-                                break;
-                            case "terra":
-                                colore = new Color(155, 90, 60);
-                                break;
-                            default:
-                                colore = new Color(255, 255, 255);
-                                break;
-                        }
-                        mondoEditor[k][l].setBackground(colore);
+                        casella[k][l].modify(scelta);
                     }
 
                     @Override
@@ -130,8 +103,7 @@ public class ProgEditorMondo extends JFrame {
         
         for (int i = 0; i < grandezzaX; i++) {
             for (int j = 0; j < grandezzaY; j++) {
-                pannelloMondo.add(mondoEditor[j][i]);
-
+                pannelloMondo.add(casella[j][i].casellaEditor);
             }
         }
 
@@ -209,7 +181,7 @@ public class ProgEditorMondo extends JFrame {
                     PrintWriter write = new PrintWriter(fOut);
                     for (int i = 0; i < grandezzaY; i++) {
                         for (int j = 0; j < grandezzaX; j++) {
-                            write.println(mondo[i][j].terreno);
+                            write.println(casella[i][j].casella.terreno);
                         }
                     }
                     write.close();
@@ -226,7 +198,6 @@ public class ProgEditorMondo extends JFrame {
             public void actionPerformed(ActionEvent ae) {
 
                 String terreno = "";
-                Color colore;
                 FileReader fIn;
                 try {
                     fIn = new FileReader("mondo.txt");
@@ -235,32 +206,7 @@ public class ProgEditorMondo extends JFrame {
                     for (int i = 0; i < grandezzaY; i++) {
                         for (int j = 0; j < grandezzaX; j++) {
                             terreno = read.readLine();
-                            mondo[i][j].terreno = terreno;
-
-                            switch (terreno) {
-                                case "acquaP":
-                                    colore = new Color(47, 54, 153);
-                                    break;
-                                case "acqua":
-                                    colore = new Color(77, 109, 243);
-                                    break;
-                                case "acquaS":
-                                    colore = new Color(153, 217, 234);
-                                    break;
-                                case "erbaC":
-                                    colore = new Color(168, 230, 29);
-                                    break;
-                                case "erba":
-                                    colore = new Color(34, 177, 76);
-                                    break;
-                                case "terra":
-                                    colore = new Color(155, 90, 60);
-                                    break;
-                                default:
-                                    colore = new Color(255, 255, 255);
-                                    break;
-                            }
-                            mondoEditor[i][j].setBackground(colore);
+                            casella[i][j].modify(terreno);
                         }
 
                     }
@@ -279,8 +225,7 @@ public class ProgEditorMondo extends JFrame {
             public void actionPerformed(ActionEvent ae) {
                 for(int i = 0; i < grandezzaY; i++) {
                     for(int j = 0; j < grandezzaX; j++) {
-                        mondo[i][j].terreno = "terra";
-                        mondoEditor[i][j].setBackground(new Color(155, 90, 60));
+                        casella[i][j].modify("terra");
                     }
                 }
             }
