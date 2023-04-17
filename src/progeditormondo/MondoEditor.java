@@ -49,6 +49,12 @@ public class MondoEditor {
             case "terra":
                 colore = new Color(155, 90, 60);
                 break;
+            case "muro":
+                colore = new Color(90,90,90);
+                break;
+            case "nemico":
+                colore = Color.red;
+                break;
             default:
                 colore = new Color(0, 0, 0);
                 break;

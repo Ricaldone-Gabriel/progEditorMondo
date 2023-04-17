@@ -44,10 +44,12 @@ public class ProgEditorMondo extends JFrame {
     JButton acqua;
     JButton erba;
     JButton erbaC;
+    JButton muro;
     JButton salva;
     JButton carica;
     JButton cancella;
-
+    JButton nemico;
+    
     JFrame frame = new JFrame("Editor");
     JPanel pannelloSceltaTerreno = new JPanel();
     JPanel pannelloMondo = new JPanel();
@@ -86,9 +88,11 @@ public class ProgEditorMondo extends JFrame {
         acqua = new JButton("Acqua");
         erba = new JButton("Erba");
         erbaC = new JButton("Erba chiara");
+        muro = new JButton("Muro");
         salva = new JButton("Salva");
         carica = new JButton("Carica");
         cancella = new JButton("Cancella");
+        nemico = new JButton("Nemico");
         
         //Si salva su mondo.txt
         frame.setLayout(null);
@@ -109,7 +113,7 @@ public class ProgEditorMondo extends JFrame {
         pannelloSceltaTerreno.setBackground(new Color(200, 200, 200));
         pannelloSceltaTerreno.setBorder(BorderFactory.createLoweredBevelBorder());
 
-        contenutoPannelloTerreno.setLayout(new GridLayout(3, 0));
+        contenutoPannelloTerreno.setLayout(new GridLayout(4, 0));
 
         titoloTerreno.setBorder(new EmptyBorder(10, 10, 30, 10));
         titoloTerreno.setFont(new Font("Calibri", Font.PLAIN, 30));
@@ -130,6 +134,8 @@ public class ProgEditorMondo extends JFrame {
         contenutoPannelloTerreno.add(acquaS);
         contenutoPannelloTerreno.add(erba);
         contenutoPannelloTerreno.add(erbaC);
+        contenutoPannelloTerreno.add(muro);
+        contenutoPannelloTerreno.add(nemico);
 
         pannelloStrumenti.add(salva);
         pannelloStrumenti.add(carica);
@@ -144,7 +150,9 @@ public class ProgEditorMondo extends JFrame {
         salva.addActionListener(handler);
         carica.addActionListener(handler);
         cancella.addActionListener(handler);
-
+        muro.addActionListener(handler);
+        nemico.addActionListener(handler);
+        
         frame.add(pannelloSceltaTerreno);
         frame.add(pannelloStrumenti);
         frame.add(pannelloMondo);
@@ -177,6 +185,12 @@ public class ProgEditorMondo extends JFrame {
             }
             if (e.getSource() == acquaP) {
                 scelta = "acquaP";
+            }
+            if (e.getSource() == muro) {
+                scelta = "muro";
+            }
+            if(e.getSource() == nemico) {
+                scelta = "nemico";
             }
             if (e.getSource() == cancella) {
                 for (int i = 0; i < grandezzaY; i++) {
