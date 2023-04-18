@@ -48,8 +48,9 @@ public class ProgEditorMondo extends JFrame {
     JButton salva;
     JButton carica;
     JButton cancella;
+    JButton cancellaTutto;
     JButton nemico;
-    
+
     JFrame frame = new JFrame("Editor");
     JPanel pannelloSceltaTerreno = new JPanel();
     JPanel pannelloMondo = new JPanel();
@@ -81,7 +82,7 @@ public class ProgEditorMondo extends JFrame {
                 });
             }
         }
-        
+
         terra = new JButton("Terra");
         acquaP = new JButton("Acqua profonda");
         acquaS = new JButton("Acqua spiaggia");
@@ -92,8 +93,9 @@ public class ProgEditorMondo extends JFrame {
         salva = new JButton("Salva");
         carica = new JButton("Carica");
         cancella = new JButton("Cancella");
+        cancellaTutto = new JButton("Cancella tutto");
         nemico = new JButton("Nemico");
-        
+
         //Si salva su mondo.txt
         frame.setLayout(null);
         frame.setResizable(false);
@@ -113,7 +115,7 @@ public class ProgEditorMondo extends JFrame {
         pannelloSceltaTerreno.setBackground(new Color(200, 200, 200));
         pannelloSceltaTerreno.setBorder(BorderFactory.createLoweredBevelBorder());
 
-        contenutoPannelloTerreno.setLayout(new GridLayout(4, 0));
+        contenutoPannelloTerreno.setLayout(new GridLayout(6, 0));
 
         titoloTerreno.setBorder(new EmptyBorder(10, 10, 30, 10));
         titoloTerreno.setFont(new Font("Calibri", Font.PLAIN, 30));
@@ -135,11 +137,12 @@ public class ProgEditorMondo extends JFrame {
         contenutoPannelloTerreno.add(erba);
         contenutoPannelloTerreno.add(erbaC);
         contenutoPannelloTerreno.add(muro);
+        contenutoPannelloTerreno.add(cancella);
         contenutoPannelloTerreno.add(nemico);
 
         pannelloStrumenti.add(salva);
         pannelloStrumenti.add(carica);
-        pannelloStrumenti.add(cancella);
+        pannelloStrumenti.add(cancellaTutto);
 
         terra.addActionListener(handler);
         acqua.addActionListener(handler);
@@ -150,9 +153,10 @@ public class ProgEditorMondo extends JFrame {
         salva.addActionListener(handler);
         carica.addActionListener(handler);
         cancella.addActionListener(handler);
+        cancellaTutto.addActionListener(handler);
         muro.addActionListener(handler);
         nemico.addActionListener(handler);
-        
+
         frame.add(pannelloSceltaTerreno);
         frame.add(pannelloStrumenti);
         frame.add(pannelloMondo);
@@ -160,7 +164,6 @@ public class ProgEditorMondo extends JFrame {
     }
 
     public static void main(String[] args) {
-
         new ProgEditorMondo();
     }
 
@@ -170,6 +173,9 @@ public class ProgEditorMondo extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == terra) {
                 scelta = "terra";
+            }
+            if (e.getSource() == cancella) {
+                scelta = "cancella";
             }
             if (e.getSource() == erba) {
                 scelta = "erba";
@@ -189,13 +195,13 @@ public class ProgEditorMondo extends JFrame {
             if (e.getSource() == muro) {
                 scelta = "muro";
             }
-            if(e.getSource() == nemico) {
+            if (e.getSource() == nemico) {
                 scelta = "nemico";
             }
-            if (e.getSource() == cancella) {
+            if (e.getSource() == cancellaTutto) {
                 for (int i = 0; i < grandezzaY; i++) {
                     for (int j = 0; j < grandezzaX; j++) {
-                        casella[i][j].modify("terra");
+                        casella[i][j].modify("cancella");
                     }
                 }
             }
@@ -223,13 +229,45 @@ public class ProgEditorMondo extends JFrame {
             if (e.getSource() == salva) {
                 try {
                     FileWriter fOut = new FileWriter("mondo.txt");
+                    FileWriter fOutNem = new FileWriter("nemico.txt");
                     PrintWriter write = new PrintWriter(fOut);
+                    PrintWriter writeNemico = new PrintWriter(fOutNem);
+
                     for (int i = 0; i < grandezzaY; i++) {
                         for (int j = 0; j < grandezzaX; j++) {
                             write.println(casella[i][j].casella.terreno);
                         }
                     }
                     write.close();
+
+                    int cont = 0;
+                    for (int i = 0; i < grandezzaY; i++) {
+                        for (int j = 0; j < grandezzaX; j++) {
+                            if (casella[i][j].nemico != null) {
+                                writeNemico.print(casella[i][j].nemico.domanda + "®");
+                                
+                                cont = 0;
+                                for (String risposta : casella[i][j].nemico.risposte) {
+                                    writeNemico.print(risposta);
+                                    cont++;
+                                    if (cont < casella[i][j].nemico.risposte.size()) {
+                                        writeNemico.print("|");
+                                    }
+                                }
+                                cont = 0;
+                                writeNemico.print("®");
+                                for (Boolean corretto : casella[i][j].nemico.corrette) {
+                                    writeNemico.print(corretto);
+                                    cont++;
+                                    if (cont < casella[i][j].nemico.risposte.size()) {
+                                        writeNemico.print("|");
+                                    }
+                                }
+                                writeNemico.println("®" + casella[i][j].nemico.posX + "®" + casella[i][j].nemico.posY);
+                            }
+                        }
+                    }
+                    writeNemico.close();
                 } catch (IOException ex) {
                     Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
                 }
