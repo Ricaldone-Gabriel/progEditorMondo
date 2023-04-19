@@ -41,7 +41,7 @@ public class MondoEditor {
 
     private JPanel pannelloPopUp;
 
-    private boolean nem;
+    public boolean nem;
 
     MondoEditor(String terreno, int i, int j) {
         casella = new Piattaforma(terreno, i, j);
@@ -92,13 +92,13 @@ public class MondoEditor {
         contRisp.get(0).add(check.get(0));
         contRisp.get(0).add(risposte.get(0));
         pannelloPopUp.add(contRisp.get(0));
+
     }
 
     public void modify(String terreno) {
-        if (!terreno.equals("cancella")) {
+        if (!(terreno.equals("cancella") || terreno.equals("nemico"))) {
             casella.terreno = terreno;
-
-        } else {
+        } else if (!terreno.equals("nemico")){
             casella.terreno = "terra";
             nemico = null;
             nem = false;
@@ -138,7 +138,11 @@ public class MondoEditor {
                 } else {
                     colore = new Color(155, 90, 60);
                 }
-
+                System.out.println(terreno);
+                break;
+            case "nemicoC":
+                colore = Color.red;
+                nem = true;
                 break;
             case "cancella":
                 colore = new Color(155, 90, 60);
@@ -151,6 +155,12 @@ public class MondoEditor {
     }
 
     private void creaNemico() {
+        
+        creaPopUp();
+        pulisciPopUp();
+    }
+
+    private void creaPopUp() {
         int result;
 
         String domandaTemp;
@@ -175,8 +185,6 @@ public class MondoEditor {
                 nem = true;
             }
         }
-
-        pulisciPopUp();
     }
 
     private void pulisciPopUp() {

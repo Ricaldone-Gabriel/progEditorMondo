@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -209,9 +210,11 @@ public class ProgEditorMondo extends JFrame {
 
                 String terreno = "";
                 FileReader fIn;
+                BufferedReader read;
+                
                 try {
                     fIn = new FileReader("mondo.txt");
-                    BufferedReader read = new BufferedReader(fIn);
+                    read = new BufferedReader(fIn);
 
                     for (int i = 0; i < grandezzaY; i++) {
                         for (int j = 0; j < grandezzaX; j++) {
@@ -220,58 +223,120 @@ public class ProgEditorMondo extends JFrame {
                         }
 
                     }
+
+                    fIn.close();
+                    read.close();
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                try {
+                    fIn = new FileReader("nemico.txt");
+                    read = new BufferedReader(fIn);
+                    String[] tok;
+                    String s = "";
+                    String tokRisp[];
+                    String domanda = "";
+                    int posX = 0, posY = 0;
+
+                    ArrayList<String> risposteTemp = new ArrayList<>();
+                    ArrayList<Boolean> risposteCTemp = new ArrayList<>();
+                    boolean risp;
+                    do {
+                        s = read.readLine();
+                        if (s != null) {
+                            tok = s.split("\\#");
+                            for (int i = 0; i < 5; i++) {
+                                switch (i) {
+                                    case 0:
+                                        domanda = tok[0];
+                                        break;
+                                    case 1:
+                                        tokRisp = tok[1].split("\\|");
+                                        for (String singRisp : tokRisp) {
+                                            risposteTemp.add(singRisp);
+                                        }
+                                        break;
+                                    case 2:
+                                        tokRisp = tok[2].split("\\|");
+
+                                        for (String singRisp : tokRisp) {
+                                            risp = Boolean.parseBoolean(singRisp);
+                                            risposteCTemp.add(risp);
+                                        }
+                                        break;
+                                    case 3:
+                                        posX = Integer.parseInt(tok[3]);
+                                        break;
+                                    case 4:
+                                        posY = Integer.parseInt(tok[4]);
+                                        break;
+                                }
+                            }
+                            
+                            casella[posY][posX].modify("nemicoC");
+                            casella[posY][posX].nemico = new Nemico(domanda,risposteTemp,risposteCTemp, posX, posY);
+                        }
+                    } while (s != null);
+                    fIn.close();
                 } catch (FileNotFoundException ex) {
                     Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            if (e.getSource() == salva) {
-                try {
-                    FileWriter fOut = new FileWriter("mondo.txt");
-                    FileWriter fOutNem = new FileWriter("nemico.txt");
-                    PrintWriter write = new PrintWriter(fOut);
-                    PrintWriter writeNemico = new PrintWriter(fOutNem);
 
-                    for (int i = 0; i < grandezzaY; i++) {
-                        for (int j = 0; j < grandezzaX; j++) {
-                            write.println(casella[i][j].casella.terreno);
-                        }
-                    }
-                    write.close();
+                if (e.getSource() == salva) {
+                    try {
+                        FileWriter fOut = new FileWriter("mondo.txt");
+                        FileWriter fOutNem = new FileWriter("nemico.txt");
+                        PrintWriter write = new PrintWriter(fOut);
+                        PrintWriter writeNemico = new PrintWriter(fOutNem);
 
-                    int cont = 0;
-                    for (int i = 0; i < grandezzaY; i++) {
-                        for (int j = 0; j < grandezzaX; j++) {
-                            if (casella[i][j].nemico != null) {
-                                writeNemico.print(casella[i][j].nemico.domanda + "®");
-                                
-                                cont = 0;
-                                for (String risposta : casella[i][j].nemico.risposte) {
-                                    writeNemico.print(risposta);
-                                    cont++;
-                                    if (cont < casella[i][j].nemico.risposte.size()) {
-                                        writeNemico.print("|");
-                                    }
-                                }
-                                cont = 0;
-                                writeNemico.print("®");
-                                for (Boolean corretto : casella[i][j].nemico.corrette) {
-                                    writeNemico.print(corretto);
-                                    cont++;
-                                    if (cont < casella[i][j].nemico.risposte.size()) {
-                                        writeNemico.print("|");
-                                    }
-                                }
-                                writeNemico.println("®" + casella[i][j].nemico.posX + "®" + casella[i][j].nemico.posY);
+                        for (int i = 0; i < grandezzaY; i++) {
+                            for (int j = 0; j < grandezzaX; j++) {
+                                write.println(casella[i][j].casella.terreno);
                             }
                         }
+                        write.close();
+                        fOut.close();
+                        
+                        int cont = 0;
+                        for (int i = 0; i < grandezzaY; i++) {
+                            for (int j = 0; j < grandezzaX; j++) {
+                                if (casella[i][j].nemico != null) {
+                                    writeNemico.print(casella[i][j].nemico.domanda + "#");
+
+                                    cont = 0;
+                                    for (String risposta : casella[i][j].nemico.risposte) {
+                                        writeNemico.print(risposta);
+                                        cont++;
+                                        if (cont < casella[i][j].nemico.risposte.size()) {
+                                            writeNemico.print("|");
+                                        }
+                                    }
+                                    cont = 0;
+                                    writeNemico.print("#");
+                                    for (Boolean corretto : casella[i][j].nemico.corrette) {
+                                        writeNemico.print(corretto);
+                                        cont++;
+                                        if (cont < casella[i][j].nemico.risposte.size()) {
+                                            writeNemico.print("|");
+                                        }
+                                    }
+                                    writeNemico.println("#" + casella[i][j].nemico.posX + "#" + casella[i][j].nemico.posY);
+                                }
+                            }
+                        }
+                        writeNemico.close();
+                        fOutNem.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    writeNemico.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(ProgEditorMondo.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
     }
-}
+
