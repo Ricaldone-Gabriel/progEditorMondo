@@ -45,10 +45,10 @@ public class MondoEditor {
 
     MondoEditor(String terreno, int i, int j) {
         casella = new Piattaforma(terreno, i, j);
-        
+
         posX = i;
         posY = j;
-        
+
         nemico = null;
         nem = false;
         casellaEditor = new JPanel();
@@ -95,7 +95,14 @@ public class MondoEditor {
     }
 
     public void modify(String terreno) {
-        casella.terreno = terreno;
+        if (!terreno.equals("cancella")) {
+            casella.terreno = terreno;
+
+        } else {
+            casella.terreno = "terra";
+            nemico = null;
+            nem = false;
+        }
         casellaEditor.setBackground(terrainColor(terreno));
     }
 
@@ -135,8 +142,6 @@ public class MondoEditor {
                 break;
             case "cancella":
                 colore = new Color(155, 90, 60);
-                nemico = null;
-                nem = false;
                 break;
             default:
                 colore = new Color(0, 0, 0);
@@ -150,29 +155,27 @@ public class MondoEditor {
 
         String domandaTemp;
         ArrayList<String> risposteTemp = new ArrayList<String>();
-        ArrayList<Boolean> corretteTemp  = new ArrayList<Boolean>();
+        ArrayList<Boolean> corretteTemp = new ArrayList<Boolean>();
 
         result = JOptionPane.showConfirmDialog(null, pannelloPopUp,
                 "Aggiungi nemico", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             System.out.println(posX + " " + posY);
-            if (!(domanda.getText().isBlank() || domanda.getText().isEmpty())) {
+            if (!(domanda.getText().matches("\\p{IsWhite_Space}*") || domanda.getText().isEmpty())) {
                 domandaTemp = domanda.getText();
-                
-                for(JTextField risposta : risposte) {
+
+                for (JTextField risposta : risposte) {
                     risposteTemp.add(risposta.getText());
                 }
-                for(JCheckBox checkSing : check) {
+                for (JCheckBox checkSing : check) {
                     corretteTemp.add(checkSing.isSelected());
                 }
-                
-                nemico = new Nemico(domandaTemp, risposteTemp, corretteTemp, posY ,posX);
+
+                nemico = new Nemico(domandaTemp, risposteTemp, corretteTemp, posY, posX);
                 nem = true;
             }
-        } else {
-            nem = false;
         }
-        
+
         pulisciPopUp();
     }
 

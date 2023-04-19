@@ -196,10 +196,10 @@ terra
 terra
 terra
 terra
-nemico
 terra
 terra
-nemico
+terra
+terra
 terra
 terra
 terra
